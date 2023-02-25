@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -24,20 +25,29 @@ start_time = time.time()
 increment = 5
 while True:
     if time.time() > increment + start_time:
-        upgrades = driver.find_elements(by=By.CSS_SELECTOR, value="#upgrades .enabled")
-        if upgrades:
-            for item in upgrades[::-1]:
-                item.click()
-        else:
-            print("No upgrades available")
+        try:
+            upgrades = driver.find_elements(by=By.CSS_SELECTOR, value="#upgrades .enabled")
+            if upgrades:
+                for item in upgrades[::-1]:
+                    item.click()
+            else:
+                print("No upgrades available")
 
-        products = driver.find_elements(by=By.CSS_SELECTOR, value=".product.enabled")
-        if products:
-            for item in products[::-1]:
-                item.click()
-        else:
-            print("Not enough cookies")
-
+            products = driver.find_elements(by=By.CSS_SELECTOR, value=".product.enabled")
+            if products:
+                for item in products[::-1]:
+                    item.click()
+            else:
+                print("Not enough cookies")
+        except:
+            print("Error occurred")
         start_time = time.time()
         increment += 5
-    cookie.click()
+    try:
+        cookie.click()
+    except NoSuchElementException:
+        print("Error occurred")
+        break
+
+
+driver.quit()
